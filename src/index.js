@@ -52,7 +52,22 @@ app.use(errorHandling);
 // Initialize DB Table
 createUserTable();
 
-// Server listener
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+app.get("/", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT current_database()");
+    res.status(200).json({
+      message: "Welcome to Server API v2",
+      dbName: result.rows[0].current_database,
+      version: "2.0.0"
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: "Database query failed" });
+  }
+});
+
+//server running
+app.listen(PORT, () => {
+  console.log(`Server is running on http:localhost:${port}`);
+
+
 });
